@@ -261,7 +261,7 @@ class ApiKeysController extends WP_REST_Controller {
 			);
 		}
 
-		if ( ! current_user_can( 'edit_user', $request['user'] ) ) {
+		if ( ! current_user_can( 'edit_user', $api_key->get_user()->ID ) ) {
 			return new WP_Error(
 				'rest_cannot_read',
 				esc_html__( 'Sorry, you are not allowed to delete API Keys for this user.', 'satispress' ),
@@ -312,7 +312,7 @@ class ApiKeysController extends WP_REST_Controller {
 	}
 
 	/**
-	 * Prepare a single package output for response.
+	 * Prepare a single API key output for response.
 	 *
 	 * @since 1.0.0
 	 *

@@ -2,6 +2,27 @@
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-07-12
+
+* Added a storage adapter to cache checksums.
+* Reworked when cached releases are added to a package to prevent all plugins and themes from being searched (instead of only managed packages).
+* Determined package type after an upgrade from provided info to prevent errors.
+* Renamed the whitelist repository to managed.
+* Updated cedaro/wp-plugin dependency to ^1.0.
+* Updated psr/log to ^3.0.
+* Removed the return type for PackageArchive:archive_on_upgrade() to prevent errors.
+* Updated API Key REST controller to check permissions using the API Key user instead of the passed user.
+* Minor code and doc clean up.
+
+## [2.0.1] - 2025-12-04
+
+* Fixed the search functionality in the package selector sidebar. See [#223].
+* Switched to using thunks instead of generators in the React data stores.
+* Added psr/log to the built zip file for release. See [#215].
+* Prevented notices in the console from core React components. See [#222]. Props [@thefrosty](https://github.com/thefrosty)
+* Explicitly marked nullable types for PHP 8.4+ compatability. See [#221]. Props [@andronocean](andronocean)
+* Prevented PHP deprecation notices caused by string interploation. See [#220]. Props [@hirasso](https://github.com/hirasso)
+
 ## [2.0.0] - 2024-10-10
 
 * SatisPress now requires PHP 8+.
@@ -137,7 +158,9 @@ Major changes include:
 * [Capabilities](docs/security.md#capabilities) were added for viewing and downloading packages, as well as managing SatisPress options. Only administrators have access by default.
 * The storage layer was abstracted to make it swappable.
 
-[Unreleased]: https://github.com/cedaro/satispress/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/cedaro/satispress/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/cedaro/satispress/compare/v2.0.1...v3.0.0
+[2.0.1]: https://github.com/cedaro/satispress/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/cedaro/satispress/compare/v1.0.4...v2.0.0
 [1.0.4]: https://github.com/cedaro/satispress/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/cedaro/satispress/compare/v1.0.2...v1.0.3

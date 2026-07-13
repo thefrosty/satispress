@@ -20,7 +20,7 @@ An API Key is a series of 32 randomly generated letters and numbers that look so
 aUEZYqq6pXlMjdg8swe0rQgMCZAPJNaR
 ```
 
-API Keys are associated with the user they're created for and inherit the users' capabilities &mdash; a key doesn't provide access to protected resources if the user can't access those resources. API Keys are read-only and limited to accessing SatisPress resources, so if one were to become compromised, an attacker could only view and download whitelisted packages.
+API Keys are associated with the user they're created for and inherit the users' capabilities &mdash; a key doesn't provide access to protected resources if the user can't access those resources. API Keys are read-only and limited to accessing SatisPress resources, so if one were to become compromised, an attacker could only view and download allowed packages.
 
 To use an API Key with Basic authentication, the API Key should be provided as the username with a password of `satispress`:
 
@@ -45,7 +45,7 @@ Composer [requires HTTPS by default](https://getcomposer.org/doc/06-config.md#se
 
 Also keep in mind that even with HTTPS enabled, the credentials will most likely be stored in clear text at some point, whether it's an `auth.json` file or directly in URLs in `composer.json`.
 
-_WordPress usernames and passwords will not work with the default authentication provider included in SatisPress versions after 0.2.3._
+_WordPress usernames and passwords will not work with the default authentication provider included in SatisPress._
 
 ## Third-Party Authentication Providers
 

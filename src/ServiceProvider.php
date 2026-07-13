@@ -94,12 +94,14 @@ class ServiceProvider implements ServiceProviderInterface {
 
 		$container['hooks.i18n'] = fn() => new I18n();
 
-		$container['hooks.package_archiver'] = fn( $container ) => new Provider\PackageArchiver(
-			$container['repository.installed'],
-			$container['repository.whitelist'],
-			$container['release.manager'],
-			$container['logger']
-		);
+		$container['hooks.package_archiver'] = function ( $container ) {
+			return new Provider\PackageArchiver(
+				$container['repository.installed'],
+				$container['repository.managed'],
+				$container['release.manager'],
+				$container['logger']
+			);
+		};
 
 		$container['hooks.request_handler'] = fn( $container ) => new Provider\RequestHandler(
 			$container['http.request'],
@@ -110,13 +112,15 @@ class ServiceProvider implements ServiceProviderInterface {
 
 		$container['hooks.rewrite_rules'] = fn() => new Provider\RewriteRules();
 
-		$container['hooks.upgrade'] = fn( $container ) => new Provider\Upgrade(
-			$container['repository.whitelist'],
-			$container['release.manager'],
-			$container['storage.packages'],
-			$container['htaccess.handler'],
-			$container['logger']
-		);
+		$container['hooks.upgrade'] = function ( $container ) {
+			return new Provider\Upgrade(
+				$container['repository.managed'],
+				$container['release.manager'],
+				$container['storage.local'],
+				$container['htaccess.handler'],
+				$container['logger']
+			);
+		};
 
 		$container['htaccess.handler'] = fn( $container ) => new Htaccess( $container['storage.working_directory'] );
 
@@ -166,23 +170,11 @@ class ServiceProvider implements ServiceProviderInterface {
 			]
 		);
 
-		$container['repository.plugins'] = fn( $container ) => new Repository\CachedRepository(
-			new Repository\InstalledPlugins(
-				$container['package.factory']
-			)
-		);
-
-		$container['repository.themes'] = fn( $container ) => new Repository\CachedRepository(
-			new Repository\InstalledThemes(
-				$container['package.factory']
-			)
-		);
-
-		$container['repository.whitelist'] = function ( $container ) {
+		$container['repository.managed'] = function ( $container ) {
 			/**
-			 * Filter the list of whitelisted plugins.
+			 * Filter the list of allowed plugins.
 			 *
-			 * Plugins should be added to the whitelist by appending a plugin's
+			 * Plugins should be added to the allowlist by appending a plugin's
 			 * basename to the array. The basename is the main plugin file's
 			 * relative path from the root plugin directory.
 			 *
@@ -195,7 +187,7 @@ class ServiceProvider implements ServiceProviderInterface {
 			$plugins = apply_filters( 'satispress_plugins', (array) get_option( 'satispress_plugins', [] ) );
 
 			/**
-			 * Filter the list of whitelisted themes.
+			 * Filter the list of allowed themes.
 			 *
 			 * @since 0.3.0
 			 *
@@ -203,7 +195,7 @@ class ServiceProvider implements ServiceProviderInterface {
 			 */
 			$themes = apply_filters( 'satispress_themes', (array) get_option( 'satispress_themes', [] ) );
 
-			return $container['repository.installed']
+			$repository = $container['repository.installed']
 				->with_filter(
 					function ( $package ) use ( $plugins ) {
 						if ( ! $package instanceof Plugin ) {
@@ -222,72 +214,127 @@ class ServiceProvider implements ServiceProviderInterface {
 						return in_array( $package->get_slug(), $themes, true );
 					}
 				);
+
+			return new Repository\ManagedPackages(
+				$repository,
+				$container['package.factory']
+			);
 		};
 
-		$container['rest.controller.api_keys'] = fn( $container ) => new REST\ApiKeysController(
-			'satispress/v1',
-			'apikeys',
-			$container['api_key.factory'],
-			$container['api_key.repository']
-		);
+		$container['repository.plugins'] = function ( $container ) {
+			return new Repository\CachedRepository(
+				new Repository\InstalledPlugins(
+					$container['package.factory']
+				)
+			);
+		};
 
-		$container['rest.controller.packages'] = fn( $container ) => new REST\PackagesController(
-			'satispress/v1',
-			'packages',
-			$container['repository.whitelist'],
-			$container['repository.installed'],
-			$container['transformer.composer_package']
-		);
+		$container['repository.themes'] = function ( $container ) {
+			return new Repository\CachedRepository(
+				new Repository\InstalledThemes(
+					$container['package.factory']
+				)
+			);
+		};
 
-		$container['rest.controller.plugins'] = fn( $container ) => new REST\InstalledPackagesController(
-			'satispress/v1',
-			'plugins',
-			$container['repository.plugins']
-		);
+		$container['rest.controller.api_keys'] = function ( $container ) {
+			return new REST\ApiKeysController(
+				'satispress/v1',
+				'apikeys',
+				$container['api_key.factory'],
+				$container['api_key.repository']
+			);
+		};
 
-		$container['rest.controller.themes'] = fn( $container ) => new REST\InstalledPackagesController(
-			'satispress/v1',
-			'themes',
-			$container['repository.themes']
-		);
+		$container['rest.controller.packages'] = function ( $container ) {
+			return new REST\PackagesController(
+				'satispress/v1',
+				'packages',
+				$container['repository.managed'],
+				$container['repository.installed'],
+				$container['transformer.composer_package'],
+				$container['package.factory']
+			);
+		};
 
-		$container['rest.controllers'] = fn( $container ) => new ServiceIterator(
-			$container,
-			[
-				'api_keys' => 'rest.controller.api_keys',
-				'packages' => 'rest.controller.packages',
-				'plugins'  => 'rest.controller.plugins',
-				'themes'   => 'rest.controller.themes',
-			]
-		);
+		$container['rest.controller.plugins'] = function ( $container ) {
+			return new REST\InstalledPackagesController(
+				'satispress/v1',
+				'plugins',
+				$container['repository.plugins']
+			);
+		};
 
-		$container['route.composer'] = fn( $container ) => new Route\Composer(
-			$container['repository.whitelist'],
-			$container['transformer.composer_repository']
-		);
+		$container['rest.controller.themes'] = function ( $container ) {
+			return new REST\InstalledPackagesController(
+				'satispress/v1',
+				'themes',
+				$container['repository.themes']
+			);
+		};
 
-		$container['route.download'] = fn( $container ) => new Route\Download(
-			$container['repository.whitelist'],
-			$container['release.manager']
-		);
+		$container['rest.controllers'] = function ( $container ) {
+			return new ServiceIterator(
+				$container,
+				[
+					'api_keys' => 'rest.controller.api_keys',
+					'packages' => 'rest.controller.packages',
+					'plugins'  => 'rest.controller.plugins',
+					'themes'   => 'rest.controller.themes',
+				]
+			);
+		};
 
-		$container['route.controllers'] = fn( $container ) => new ServiceLocator(
-			$container,
-			[
-				'composer' => 'route.composer',
-				'download' => 'route.download',
-			]
-		);
+		$container['route.composer'] = function ( $container ) {
+			return new Route\Composer(
+				$container['repository.managed'],
+				$container['transformer.composer_repository']
+			);
+		};
 
-		$container['screen.edit_user'] = fn( $container ) => new Screen\EditUser(
-			$container['api_key.repository']
-		);
+		$container['route.download'] = function ( $container ) {
+			return new Route\Download(
+				$container['repository.managed'],
+				$container['release.manager']
+			);
+		};
 
-		$container['screen.settings'] = fn( $container ) => new Screen\Settings( $container['api_key.repository'] );
+		$container['route.controllers'] = function ( $container ) {
+			return new ServiceLocator(
+				$container,
+				[
+					'composer' => 'route.composer',
+					'download' => 'route.download',
+				]
+			);
+		};
 
-		$container['storage.packages'] = function ( $container ) {
+		$container['screen.edit_user'] = function ( $container ) {
+			return new Screen\EditUser(
+				$container['api_key.repository']
+			);
+		};
+
+		$container['screen.settings'] = function ( $container ) {
+			return new Screen\Settings( $container['api_key.repository'] );
+		};
+
+		$container['storage.local'] = function ( $container ) {
 			$path = path_join( $container['storage.working_directory'], 'packages/' );
 			return new Storage\Local( $path );
+		};
+
+		$container['storage.packages'] = function ( $container ) {
+			/**
+			 * Filter the time to live for cached checksums.
+			 *
+			 * @since 3.0.0
+			 *
+			 * @param int $cache_ttl Time to live in seconds.
+			 */
+			$cache_ttl = (int) apply_filters( 'satispress_checksum_cache_ttl', MONTH_IN_SECONDS );
+
+			return new Storage\CachedStorage( $container['storage.local'], $cache_ttl );
 		};
 
 		$container['storage.working_directory'] = function ( $container ) {
