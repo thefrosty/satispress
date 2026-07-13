@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
+use Rector\CodingStyle\Rector\ArrowFunction\ArrowFunctionDelegatingCallToFirstClassCallableRector;
 use Rector\CodingStyle\Rector\FuncCall\FunctionFirstClassCallableRector;
 use Rector\Config\RectorConfig;
 use Rector\Php81\Rector\Array_\ArrayToFirstClassCallableRector;
@@ -20,9 +21,10 @@ return RectorConfig::configure()
 	->withSkip([
 		// This should stop Rector changing callable arrays to $this->function in WP's add_*.
         ArrayToFirstClassCallableRector::class,
+        ArrowFunctionDelegatingCallToFirstClassCallableRector::class,
         FunctionFirstClassCallableRector::class,
 	])
 	->withRules([
 		InlineConstructorDefaultToPropertyRector::class,
 	])
-	->withPhpSets(php85: true);
+	->withPhpSets(php84: true);
