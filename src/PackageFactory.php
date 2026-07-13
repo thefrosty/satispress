@@ -23,7 +23,7 @@ use SatisPress\PackageType\ThemeBuilder;
  *
  * @since 0.3.0
  */
-final class PackageFactory {
+final readonly class PackageFactory {
 	/**
 	 * Constructor.
 	 *
@@ -31,7 +31,7 @@ final class PackageFactory {
 	 *
 	 * @param ReleaseManager $release_manager Release manager.
 	 */
-	public function __construct( private readonly ReleaseManager $release_manager ) {
+	public function __construct( private ReleaseManager $release_manager ) {
 	}
 
 	/**

@@ -29,24 +29,18 @@ use SatisPress\Repository\PackageRepository;
 class Download implements Route {
 	/**
 	 * Latest version.
-	 *
-	 * @var string
 	 */
-	final public const LATEST_VERSION = 'latest';
+	final public const string LATEST_VERSION = 'latest';
 
 	/**
 	 * Regex for sanitizing package slugs.
-	 *
-	 * @var string
 	 */
-	final public const PACKAGE_SLUG_REGEX = '/[^A-Za-z0-9._\-]+/i';
+	final public const string PACKAGE_SLUG_REGEX = '/[^A-Za-z0-9._\-]+/i';
 
 	/**
 	 * Regex for sanitizing package versions.
-	 *
-	 * @var string
 	 */
-	final public const PACKAGE_VERSION_REGEX = '/[^0-9a-z.-]+/i';
+	final public const string PACKAGE_VERSION_REGEX = '/[^0-9a-z.-]+/i';
 
 	/**
 	 * Release manager.

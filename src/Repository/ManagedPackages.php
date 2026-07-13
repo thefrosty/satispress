@@ -40,7 +40,7 @@ class ManagedPackages extends AbstractRepository implements PackageRepository {
 	 * @since 3.0.0
 	 *
 	 * @param PackageRepository $repository Package repository.
-	 * @param PackageFactory $factory Package factory.
+	 * @param PackageFactory    $factory Package factory.
 	 */
 	public function __construct( PackageRepository $repository, PackageFactory $factory ) {
 		$this->factory    = $factory;

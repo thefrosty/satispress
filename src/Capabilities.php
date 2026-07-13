@@ -22,38 +22,28 @@ namespace SatisPress;
 final class Capabilities {
 	/**
 	 * Primitive capability for downloading packages.
-	 *
-	 * @var string
 	 */
-	public const DOWNLOAD_PACKAGES = 'satispress_download_packages';
+	public const string DOWNLOAD_PACKAGES = 'satispress_download_packages';
 
 	/**
 	 * Meta capability for downloading a specific package.
-	 *
-	 * @var string
 	 */
-	public const DOWNLOAD_PACKAGE = 'satispress_download_package';
+	public const string DOWNLOAD_PACKAGE = 'satispress_download_package';
 
 	/**
 	 * Primitive capability for viewing packages.
-	 *
-	 * @var string
 	 */
-	public const VIEW_PACKAGES = 'satispress_view_packages';
+	public const string VIEW_PACKAGES = 'satispress_view_packages';
 
 	/**
 	 * Meta capability for viewing a specific package.
-	 *
-	 * @var string
 	 */
-	public const VIEW_PACKAGE = 'satispress_view_package';
+	public const string VIEW_PACKAGE = 'satispress_view_package';
 
 	/**
 	 * Primitive capability for managing options.
-	 *
-	 * @var string
 	 */
-	public const MANAGE_OPTIONS = 'satispress_manage_options';
+	public const string MANAGE_OPTIONS = 'satispress_manage_options';
 
 	/**
 	 * Register capabilities.

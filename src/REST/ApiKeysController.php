@@ -29,10 +29,8 @@ use WP_REST_Server;
 class ApiKeysController extends WP_REST_Controller {
 	/**
 	 * API Key token pattern.
-	 *
-	 * @var string
 	 */
-	final public const TOKEN_PATTERN = '[A-Za-z0-9]{32}';
+	final public const string TOKEN_PATTERN = '[A-Za-z0-9]{32}';
 
 	/**
 	 * API Key factory.

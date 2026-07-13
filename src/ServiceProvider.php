@@ -52,7 +52,7 @@ class ServiceProvider implements ServiceProviderInterface {
 			$container['api_key.factory']
 		);
 
-		$container['archiver'] = fn( $container ) => ( new Archiver( $container['logger'] ) )
+		$container['archiver'] = fn( $container ) =>  new Archiver( $container['logger'] )
 				->register_validators( $container['validators.artifact'] );
 
 		$container['authentication.servers'] = function ( $container ) {
@@ -94,14 +94,12 @@ class ServiceProvider implements ServiceProviderInterface {
 
 		$container['hooks.i18n'] = fn() => new I18n();
 
-		$container['hooks.package_archiver'] = function ( $container ) {
-			return new Provider\PackageArchiver(
-				$container['repository.installed'],
-				$container['repository.managed'],
-				$container['release.manager'],
-				$container['logger']
-			);
-		};
+		$container['hooks.package_archiver'] = ( fn( $container ) => new Provider\PackageArchiver(
+			$container['repository.installed'],
+			$container['repository.managed'],
+			$container['release.manager'],
+			$container['logger']
+		) );
 
 		$container['hooks.request_handler'] = fn( $container ) => new Provider\RequestHandler(
 			$container['http.request'],
@@ -112,15 +110,13 @@ class ServiceProvider implements ServiceProviderInterface {
 
 		$container['hooks.rewrite_rules'] = fn() => new Provider\RewriteRules();
 
-		$container['hooks.upgrade'] = function ( $container ) {
-			return new Provider\Upgrade(
-				$container['repository.managed'],
-				$container['release.manager'],
-				$container['storage.local'],
-				$container['htaccess.handler'],
-				$container['logger']
-			);
-		};
+		$container['hooks.upgrade'] = ( fn( $container ) => new Provider\Upgrade(
+			$container['repository.managed'],
+			$container['release.manager'],
+			$container['storage.local'],
+			$container['htaccess.handler'],
+			$container['logger']
+		) );
 
 		$container['htaccess.handler'] = fn( $container ) => new Htaccess( $container['storage.working_directory'] );
 
@@ -221,103 +217,79 @@ class ServiceProvider implements ServiceProviderInterface {
 			);
 		};
 
-		$container['repository.plugins'] = function ( $container ) {
-			return new Repository\CachedRepository(
-				new Repository\InstalledPlugins(
-					$container['package.factory']
-				)
-			);
-		};
-
-		$container['repository.themes'] = function ( $container ) {
-			return new Repository\CachedRepository(
-				new Repository\InstalledThemes(
-					$container['package.factory']
-				)
-			);
-		};
-
-		$container['rest.controller.api_keys'] = function ( $container ) {
-			return new REST\ApiKeysController(
-				'satispress/v1',
-				'apikeys',
-				$container['api_key.factory'],
-				$container['api_key.repository']
-			);
-		};
-
-		$container['rest.controller.packages'] = function ( $container ) {
-			return new REST\PackagesController(
-				'satispress/v1',
-				'packages',
-				$container['repository.managed'],
-				$container['repository.installed'],
-				$container['transformer.composer_package'],
+		$container['repository.plugins'] = ( fn( $container ) => new Repository\CachedRepository(
+			new Repository\InstalledPlugins(
 				$container['package.factory']
-			);
-		};
+			)
+		) );
 
-		$container['rest.controller.plugins'] = function ( $container ) {
-			return new REST\InstalledPackagesController(
-				'satispress/v1',
-				'plugins',
-				$container['repository.plugins']
-			);
-		};
+		$container['repository.themes'] = ( fn( $container ) => new Repository\CachedRepository(
+			new Repository\InstalledThemes(
+				$container['package.factory']
+			)
+		) );
 
-		$container['rest.controller.themes'] = function ( $container ) {
-			return new REST\InstalledPackagesController(
-				'satispress/v1',
-				'themes',
-				$container['repository.themes']
-			);
-		};
+		$container['rest.controller.api_keys'] = ( fn( $container ) => new REST\ApiKeysController(
+			'satispress/v1',
+			'apikeys',
+			$container['api_key.factory'],
+			$container['api_key.repository']
+		) );
 
-		$container['rest.controllers'] = function ( $container ) {
-			return new ServiceIterator(
-				$container,
-				[
-					'api_keys' => 'rest.controller.api_keys',
-					'packages' => 'rest.controller.packages',
-					'plugins'  => 'rest.controller.plugins',
-					'themes'   => 'rest.controller.themes',
-				]
-			);
-		};
+		$container['rest.controller.packages'] = ( fn( $container ) => new REST\PackagesController(
+			'satispress/v1',
+			'packages',
+			$container['repository.managed'],
+			$container['repository.installed'],
+			$container['transformer.composer_package'],
+			$container['package.factory']
+		) );
 
-		$container['route.composer'] = function ( $container ) {
-			return new Route\Composer(
-				$container['repository.managed'],
-				$container['transformer.composer_repository']
-			);
-		};
+		$container['rest.controller.plugins'] = ( fn( $container ) => new REST\InstalledPackagesController(
+			'satispress/v1',
+			'plugins',
+			$container['repository.plugins']
+		) );
 
-		$container['route.download'] = function ( $container ) {
-			return new Route\Download(
-				$container['repository.managed'],
-				$container['release.manager']
-			);
-		};
+		$container['rest.controller.themes'] = ( fn( $container ) => new REST\InstalledPackagesController(
+			'satispress/v1',
+			'themes',
+			$container['repository.themes']
+		) );
 
-		$container['route.controllers'] = function ( $container ) {
-			return new ServiceLocator(
-				$container,
-				[
-					'composer' => 'route.composer',
-					'download' => 'route.download',
-				]
-			);
-		};
+		$container['rest.controllers'] = ( fn( $container ) => new ServiceIterator(
+			$container,
+			[
+				'api_keys' => 'rest.controller.api_keys',
+				'packages' => 'rest.controller.packages',
+				'plugins'  => 'rest.controller.plugins',
+				'themes'   => 'rest.controller.themes',
+			]
+		) );
 
-		$container['screen.edit_user'] = function ( $container ) {
-			return new Screen\EditUser(
-				$container['api_key.repository']
-			);
-		};
+		$container['route.composer'] = ( fn( $container ) => new Route\Composer(
+			$container['repository.managed'],
+			$container['transformer.composer_repository']
+		) );
 
-		$container['screen.settings'] = function ( $container ) {
-			return new Screen\Settings( $container['api_key.repository'] );
-		};
+		$container['route.download'] = ( fn( $container ) => new Route\Download(
+			$container['repository.managed'],
+			$container['release.manager']
+		) );
+
+		$container['route.controllers'] = ( fn( $container ) => new ServiceLocator(
+			$container,
+			[
+				'composer' => 'route.composer',
+				'download' => 'route.download',
+			]
+		) );
+
+		$container['screen.edit_user'] = ( fn( $container ) => new Screen\EditUser(
+			$container['api_key.repository']
+		) );
+
+		$container['screen.settings'] = ( fn( $container ) => new Screen\Settings( $container['api_key.repository'] ) );
 
 		$container['storage.local'] = function ( $container ) {
 			$path = path_join( $container['storage.working_directory'], 'packages/' );

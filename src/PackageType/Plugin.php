@@ -46,6 +46,7 @@ final class Plugin extends BasePackage {
 	 * @param array $excludes Optional. Array of file names to exclude.
 	 * @return array
 	 */
+	#[\Override]
 	public function get_files( array $excludes = [] ): array {
 		// Single-file plugins should only include the main plugin file.
 		if ( $this->is_single_file() ) {

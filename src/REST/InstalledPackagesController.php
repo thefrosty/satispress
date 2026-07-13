@@ -28,10 +28,8 @@ use WP_REST_Server;
 class InstalledPackagesController extends WP_REST_Controller {
 	/**
 	 * Package slug pattern.
-	 *
-	 * @var string
 	 */
-	final public const SLUG_PATTERN = '[^.\/]+(?:\/[^.\/]+)?';
+	final public const string SLUG_PATTERN = '[^.\/]+(?:\/[^.\/]+)?';
 
 	/**
 	 * Package repository.

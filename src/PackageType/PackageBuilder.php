@@ -354,7 +354,6 @@ class PackageBuilder {
 	 */
 	protected function set( $name, mixed $value ): self {
 		$property = $this->class->getProperty( $name );
-		$property->setAccessible( true );
 		$property->setValue( $this->package, $value );
 		return $this;
 	}

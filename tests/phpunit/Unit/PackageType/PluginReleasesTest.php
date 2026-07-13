@@ -24,7 +24,7 @@ class PluginReleasesTest extends TestCase {
 		$manager  = new ReleaseManager( $storage, $archiver );
 		$package  = new Plugin();
 
-		$this->builder = ( new PluginBuilder( $package, $manager ) )
+		$this->builder =  new PluginBuilder( $package, $manager  )
 			->set_basename( 'basic/basic.php' )
 			->set_slug( 'basic' );
 	}
