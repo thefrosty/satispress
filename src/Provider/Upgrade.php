@@ -30,11 +30,9 @@ use const SatisPress\VERSION;
  */
 class Upgrade extends AbstractHookProvider {
 	/**
-	 * Version option name.
-	 *
-	 * @var string
-	 */
-	final public const VERSION_OPTION_NAME = 'satispress_version';
+     * Version option name.
+     */
+    final public const string VERSION_OPTION_NAME = 'satispress_version';
 
 	/**
 	 * Htaccess handler.

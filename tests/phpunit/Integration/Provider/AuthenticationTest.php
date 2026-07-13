@@ -46,7 +46,8 @@ class AuthenticationTest extends TestCase {
 		add_filter( 'determine_current_user', [ $this->provider, 'determine_current_user' ] );
 	}
 
-	public function tearDown(): void {
+	#[\Override]
+    public function tearDown(): void {
 		$this->set_request_headers();
 		$this->reset_auth_status();
 		remove_filter( 'determine_current_user', [ $this->provider, 'determine_current_user' ] );
@@ -152,7 +153,6 @@ class AuthenticationTest extends TestCase {
 
 		$class = new \ReflectionClass( $this->provider );
 		$property = $class->getProperty( 'request' );
-		$property->setAccessible( true );
 		$property->setValue( $this->provider, $request );
 	}
 
@@ -160,11 +160,9 @@ class AuthenticationTest extends TestCase {
 		$class = new \ReflectionClass( $this->provider );
 
 		$property = $class->getProperty( 'auth_status' );
-		$property->setAccessible( true );
 		$property->setValue( $this->provider, $auth_status );
 
 		$property = $class->getProperty( 'should_attempt' );
-		$property->setAccessible( true );
 		$property->setValue( $this->provider, true );
 	}
 }

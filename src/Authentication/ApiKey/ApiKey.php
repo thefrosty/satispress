@@ -23,11 +23,9 @@ use WP_User;
  */
 final class ApiKey implements ArrayAccess {
 	/**
-	 * API key length.
-	 *
-	 * @var int
-	 */
-	const TOKEN_LENGTH = 32;
+     * API key length.
+     */
+    const int TOKEN_LENGTH = 32;
 
 	/**
 	 * API key data.
