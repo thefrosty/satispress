@@ -21,9 +21,9 @@ use WP_User_Query;
  */
 class Repository implements ApiKeyRepository {
 	/**
-     * Prefix for user meta keys.
-     */
-    final public const string META_PREFIX = 'satispress_api_key.';
+	 * Prefix for user meta keys.
+	 */
+	final public const string META_PREFIX = 'satispress_api_key.';
 
 	/**
 	 * API Key factory.

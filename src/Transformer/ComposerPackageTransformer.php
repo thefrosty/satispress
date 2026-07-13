@@ -21,9 +21,9 @@ use SatisPress\PackageFactory;
  */
 class ComposerPackageTransformer implements PackageTransformer {
 	/**
-     * Composer package type map.
-     */
-    final public const array WORDPRESS_TYPES = [
+	 * Composer package type map.
+	 */
+	final public const array WORDPRESS_TYPES = [
 		'dropin'   => 'wordpress-dropin',
 		'muplugin' => 'wordpress-muplugin',
 		'plugin'   => 'wordpress-plugin',

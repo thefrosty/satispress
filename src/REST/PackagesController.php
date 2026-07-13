@@ -77,6 +77,7 @@ class PackagesController extends WP_REST_Controller {
 	 * @param PackageRepository  $repository           Package repository.
 	 * @param PackageRepository  $installed_packages   Installed packages repository.
 	 * @param PackageTransformer $composer_transformer Package transformer.
+     * @param PackageFactory $factory
 	 */
 	public function __construct(
 		string $namespace,

@@ -47,7 +47,7 @@ final class Plugin extends BasePackage {
 	 * @return array
 	 */
 	#[\Override]
-    public function get_files( array $excludes = [] ): array {
+	public function get_files( array $excludes = [] ): array {
 		// Single-file plugins should only include the main plugin file.
 		if ( $this->is_single_file() ) {
 			return [ $this->get_path( $this->get_basename() ) ];

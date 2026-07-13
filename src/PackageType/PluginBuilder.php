@@ -74,7 +74,7 @@ final class PluginBuilder extends PackageBuilder {
 	 * @return $this
 	 */
 	#[\Override]
-    public function with_package( Package $package ): PackageBuilder {
+	public function with_package( Package $package ): PackageBuilder {
 		parent::with_package( $package );
 
 		if ( $package instanceof Plugin ) {
