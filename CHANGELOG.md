@@ -20,8 +20,8 @@
 * Switched to using thunks instead of generators in the React data stores.
 * Added psr/log to the built zip file for release. See [#215].
 * Prevented notices in the console from core React components. See [#222]. Props [@thefrosty](https://github.com/thefrosty)
-* Explicitly marked nullable types for PHP 8.4+ compatability. See [#221]. Props [@andronocean](andronocean)
-* Prevented PHP deprecation notices caused by string interploation. See [#220]. Props [@hirasso](https://github.com/hirasso)
+* Explicitly marked nullable types for PHP 8.4+ compatibility. See [#221]. Props [@andronocean](andronocean)
+* Prevented PHP deprecation notices caused by string interpolation. See [#220]. Props [@hirasso](https://github.com/hirasso)
 
 ## [2.0.0] - 2024-10-10
 
